@@ -6,7 +6,7 @@ import { useCreatePost } from "@/hooks/useRequest/posts"
 import IPostsBody from "@/types/posts/body"
 import { Flex } from "@mantine/core"
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 
@@ -36,7 +36,9 @@ const FormPosts = () => {
     useEffect(() => {
         if (isSuccess) {
             form.reset({
-                userId: 2000
+                userId: 2000,
+                body: "",
+                title: ""
             })
             toast.success("your request is success!")
         }
@@ -45,48 +47,52 @@ const FormPosts = () => {
 
     return (
         <Card>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
+            <FormProvider
+                {...form}
             >
-                <Flex
-                    gap={{ base: 18, sm: 12 }}
-                    direction={{ base: "column", sm: "row" }}
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
                 >
-                    <Input
-                        {...form.register("title", {
-                            required: true,
-                            minLength: {
-                                value: 10, message: "minimum 10 character"
-                            },
-                        })}
-                        label="Title"
-                        error={form.formState?.errors?.title?.message}
-                        withAsterisk
-                        flex={1}
-                    />
-
-                    <Input
-                        {...form.register("body", {
-                            required: true,
-                            minLength: {
-                                value: 12, message: "minimum 12 character"
-                            }
-                        })}
-                        error={form.formState?.errors?.body?.message}
-                        label="Body"
-                        withAsterisk
-                        flex={3}
-                    />
-
-                    <Button
-                        type="submit"
-                        mt={22}
-                        loading={isPending}
+                    <Flex
+                        gap={{ base: 18, sm: 12 }}
+                        direction={{ base: "column", sm: "row" }}
                     >
-                        Submit
-                    </Button>
-                </Flex>
-            </form>
+                        <Input
+                            {...form.register("title", {
+                                required: true,
+                                minLength: {
+                                    value: 10, message: "minimum 10 character"
+                                },
+                            })}
+                            label="Title"
+                            error={form.formState?.errors?.title?.message}
+                            withAsterisk
+                            flex={1}
+                        />
+
+                        <Input
+                            {...form.register("body", {
+                                required: true,
+                                minLength: {
+                                    value: 12, message: "minimum 12 character"
+                                }
+                            })}
+                            error={form.formState?.errors?.body?.message}
+                            label="Body"
+                            withAsterisk
+                            flex={3}
+                        />
+
+                        <Button
+                            type="submit"
+                            mt={22}
+                            loading={isPending}
+                        >
+                            Submit
+                        </Button>
+                    </Flex>
+                </form>
+            </FormProvider>
         </Card>
     )
 }
